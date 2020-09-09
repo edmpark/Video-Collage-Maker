@@ -27,21 +27,21 @@ except OSError:
 currentframe = 0
 
 # gets duration of video
-length = int(cam.get(cv2.CAP_PROP_FRAME_COUNT))
+length = round(int(cam.get(cv2.CAP_PROP_FRAME_COUNT)) / (split-1))
 print(length)
 
 while (True): 
     # reading from frame
     ret, frame = cam.read()
 
-    frame_per_second = cam.get(cv2.CAP_PROP_FPS)
-
-    if currentframe % (length/split) == 0:  
-      name = './data/frame' + str(currentframe) + '.jpg'
-      print('Creating...' + name)
-      cv2.imwrite(name, frame)
-      currentframe += 1
+    if ret:
+        if currentframe % length == 0:  
+            name = './data/frame' + str(currentframe) + '.jpg'
+            print('Creating...' + name)
+            cv2.imwrite(name, frame)
+        currentframe += 1
     else:
+      print("Done")
       break
 
 # Release all space and windows once done
