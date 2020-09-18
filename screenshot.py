@@ -1,10 +1,23 @@
 # Importing all necessary libraries
+from imutils import build_montages
+from imutils import paths
+import argparse
 import cv2
 import os
 import time
 
+# construct the argument parse and parse the arguments
+ap = argparse.ArgumentParser()
+ap.add_argument("-v", "--video", required= True,
+    help="path of video")
+ap.add_argument("-i", "--images", required=True,
+	help="path to input directory of images")
+ap.add_argument("-n", "--name", type=str, default="montage",
+	help="name of montage")
+args = vars(ap.parse_args())
+
 # Read the video from specified path
-cam = cv2.VideoCapture("SampleVideo.mp4")
+cam = cv2.VideoCapture(args["video"])
 
 if not cam.isOpened(): 
     print ("could not open :")
@@ -28,7 +41,6 @@ currentframe = 0
 
 # gets duration of video
 length = round(int(cam.get(cv2.CAP_PROP_FRAME_COUNT)) / (split-1))
-print(length)
 
 while (True): 
     # reading from frame
@@ -47,3 +59,21 @@ while (True):
 # Release all space and windows once done
 cam.release()
 cv2.destroyAllWindows()
+
+#------combining image part------
+# grab the paths to the images
+imagePaths = list(paths.list_images(args["images"]))
+images = []
+
+# loop over the list of image paths
+for imagePath in imagePaths:
+	# load the image and update the list of images
+	image = cv2.imread(imagePath)
+	images.append(image)
+
+# construct the montages for the images
+montages = build_montages(images, (128, 196), (7, 3))
+for montage in montages:
+	cv2.imwrite("Montage.jpg", montage)
+	cv2.waitKey(0)
+
