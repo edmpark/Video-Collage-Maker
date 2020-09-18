@@ -12,8 +12,10 @@ ap.add_argument("-v", "--video", required= True,
     help="path of video")
 ap.add_argument("-i", "--images", required=True,
 	help="path to input directory of images")
+ap.add_argument("-s", "--split", type=int, default="4",
+	help="number of images to get from video for collage")
 ap.add_argument("-n", "--name", type=str, default="montage",
-	help="name of montage")
+	help="name of collage/montage")
 args = vars(ap.parse_args())
 
 # Read the video from specified path
@@ -24,7 +26,7 @@ if not cam.isOpened():
     quit()
 
 # number of times to screenshot video in equal proportion of video length
-split = 4
+split = args["split"]
 
 try:
 
