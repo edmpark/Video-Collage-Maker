@@ -4,6 +4,7 @@ from imutils import paths
 import argparse
 import cv2
 import os
+import glob
 import time
 
 # construct the argument parse and parse the arguments
@@ -16,6 +17,10 @@ ap.add_argument("-s", "--split", type=int, default="4",
 	help="number of images to get from video for collage")
 ap.add_argument("-n", "--name", type=str, default="montage",
 	help="name of collage/montage")
+ap.add_argument("-r", "--row", type=int, required=False,
+	help="number of row in collage")
+ap.add_argument("-c", "--col", type=int, required=False,
+	help="number of column in collage")
 args = vars(ap.parse_args())
 
 # Read the video from specified path
@@ -42,7 +47,7 @@ except OSError:
 currentframe = 0
 
 # gets duration of video
-length = round(int(cam.get(cv2.CAP_PROP_FRAME_COUNT)) / (split-1))
+length = round(int(cam.get(cv2.CAP_PROP_FRAME_COUNT)) / split)
 
 while (True): 
     # reading from frame
@@ -74,8 +79,13 @@ for imagePath in imagePaths:
 	images.append(image)
 
 # construct the montages for the images
-montages = build_montages(images, (128, 196), (7, 3))
+montages = build_montages(images, (196, 128), (args["col"], args["row"]))
 for montage in montages:
 	cv2.imwrite("Montage.jpg", montage)
 	cv2.waitKey(0)
+
+#removes all individual collage images in image directory
+files = glob.glob(args["images"]+"/*")
+for f in files:
+    os.remove(f)
 
