@@ -21,6 +21,8 @@ ap.add_argument("-r", "--row", type=int, required=False,
 	help="number of row in collage")
 ap.add_argument("-c", "--col", type=int, required=False,
 	help="number of column in collage")
+ap.add_argument("-a", "--auto", action='store_true',
+	help="# of splits = row x col")
 args = vars(ap.parse_args())
 
 # Read the video from specified path
@@ -29,13 +31,10 @@ cam = cv2.VideoCapture(args["video"])
 if not cam.isOpened(): 
     print ("could not open :")
     quit()
-
 try:
-
     # creating a folder named data
     if not os.path.exists('data'):
         os.makedirs('data')
-
     # if not created then raise error
 except OSError:
     print('Error: Creating directory of data')
@@ -44,7 +43,10 @@ except OSError:
 currentframe = 0
 
 # number of times to screenshot video in equal proportion of video length
-split = args["split"]
+if args["auto"]:
+    split = args["row"] * args["col"]
+else:
+    split = args["split"]
 
 # gets # of frames of split video segment 
 length = round(int(cam.get(cv2.CAP_PROP_FRAME_COUNT)) / split)
