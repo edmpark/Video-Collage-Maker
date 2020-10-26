@@ -17,6 +17,8 @@ ap.add_argument("-s", "--split", type=int, default="4",
 	help="number of images to get from video for collage")
 ap.add_argument("-n", "--name", type=str, default="montage",
 	help="name of collage/montage")
+ap.add_argument("-t", "--type", type=str, default="jpg",
+	help="file extension type")
 ap.add_argument("-r", "--row", type=int, required=False,
 	help="number of row in collage")
 ap.add_argument("-c", "--col", type=int, required=False,
@@ -63,12 +65,11 @@ while (True):
     if ret:
         if image_count < split:  
             image_count += 1
-            name = './data/frame' + str(currentframe) + '.jpg'
+            name = './data/frame' + str(currentframe) + '.' + args["type"]
             cv2.imwrite(name, frame)
             images.append( cv2.imread(name) )
             currentframe += length
             cam.set(1, currentframe)
-        #print(currentframe)
     else:
       print("Done")
       break
@@ -80,8 +81,7 @@ cv2.destroyAllWindows()
 # construct the montages for the images
 montages = build_montages(images, (196, 128), (args["col"], args["row"]))
 for montage in montages:
-	cv2.imwrite("Montage.jpg", montage)
-	cv2.waitKey(0)
+	cv2.imwrite("Montage." + args["type"], montage)
 
 #removes all individual collage images in image directory
 files = glob.glob(args["images"]+"/*")
