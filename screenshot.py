@@ -48,7 +48,7 @@ if args["auto"]:
 else:
     split = args["split"]
 
-# gets # of frames of split video segment 
+# gets # of frames of a split video segment 
 length = round(int(cam.get(cv2.CAP_PROP_FRAME_COUNT)) / split)
 
 #keeps track of how many screenshots were taken from video so far in loop
@@ -61,12 +61,14 @@ while (True):
     # reading from frame
     ret, frame = cam.read()
     if ret:
-        if currentframe % length == 0 and image_count < split:  
+        if image_count < split:  
             image_count += 1
             name = './data/frame' + str(currentframe) + '.jpg'
             cv2.imwrite(name, frame)
             images.append( cv2.imread(name) )
-        currentframe += 1
+            currentframe += length
+            cam.set(1, currentframe)
+        #print(currentframe)
     else:
       print("Done")
       break
