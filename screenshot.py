@@ -1,15 +1,17 @@
 # Importing all necessary libraries
 from imutils import build_montages
 from imutils import paths
+from tkinter import *
+from tkinter import filedialog
 import argparse
 import cv2
 import os
-import glob
+import shutil
 import time
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
-ap.add_argument("-v", "--video", required= True,
+ap.add_argument("-v", "--video",
     help="path of video")
 ap.add_argument("-i", "--images", default="data",
 	help="path to input directory of images")
@@ -84,7 +86,6 @@ for montage in montages:
 	cv2.imwrite("Montage." + args["type"], montage)
 
 #removes all individual collage images in image directory
-files = glob.glob(args["images"]+"/*")
-for f in files:
-   os.remove(f)
+shutil.rmtree(args["images"])
+
 
